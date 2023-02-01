@@ -65,12 +65,18 @@ app.post("/upload", (req, res) => {
 
     let httpRequest = http.request(options, function (response) {
         console.log(`STATUS: ${response.statusCode}`);
-        console.log(`HEADERS: ${JSON.stringify(response.headers)}`);
+        response.setEncoding('utf8');
+        response.on('data', (chunk) => {
+            console.log(`BODY: ${chunk}`);
+        });
+        response.on('end', () => {
+            console.log('Tier 1 upload complete..');
+            res.redirect('/');
+        });
     });
 
     httpRequest.write(postData);
     httpRequest.end();
-    res.redirect('/');
 });
 
 app.get("/images/*", (req, res) => {
